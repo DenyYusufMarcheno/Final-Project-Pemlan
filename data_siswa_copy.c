@@ -101,53 +101,6 @@ void SelectionSort(siswa arr[], int jumlah, int pilihan, int urutan)
     }
 }
 
-int BinarySearchNISN(siswa sk[], int jumlah, int target)
-{
-    int l = 0, r = jumlah - 1;
-    while (l <= r)
-    {
-        int m = l + (r - l) / 2;
-        if (sk[m].nisn == target)
-            return m;
-        if (sk[m].nisn < target)
-            l = m + 1;
-        else
-            r = m - 1;
-    }
-    return -1;
-}
-
-int LinearSearchNama(siswa sk[], int jumlah, char *target)
-{
-    for (int i = 0; i < jumlah; i++)
-    {
-        if (strcmp(sk[i].nama, target) == 0)
-            return i;
-    }
-    return -1;
-}
-
-int LinearSearchAlamat(siswa sk[], int jumlah, char *target)
-{
-    for (int i = 0; i < jumlah; i++)
-    {
-        if (strcmp(sk[i].alamat, target) == 0)
-            return i;
-    }
-    return -1;
-}
-
-int LinearSearchNilai(siswa sk[], int jumlah, float target)
-{
-    for (int i = 0; i < jumlah; i++)
-    {
-        if (sk[i].nilai == target)
-            return i;
-    }
-    return -1;
-}
-
-// Fungsi untuk menginput data siswa dengan validasi
 void MasukkanDataSiswa(siswa daftarSiswa[], int index, int jumlahSiswa)
 {
     int valid;
@@ -179,7 +132,6 @@ void MasukkanDataSiswa(siswa daftarSiswa[], int index, int jumlahSiswa)
     } while (!valid);
 }
 
-// Fungsi untuk menampilkan data siswa dalam bentuk tabel
 void TampilkanDataTabel(siswa daftarSiswa[], int jumlah)
 {
     printf("\n===================================================================\n");
@@ -196,11 +148,37 @@ void TampilkanDataTabel(siswa daftarSiswa[], int jumlah)
     printf("===================================================================\n");
 }
 
+void TampilkanSiswaLolos(siswa daftarSiswa[], int jumlah)
+{
+    printf("\n=== Data Siswa dengan Nilai di Atas 75 ===\n");
+    printf("===================================================================\n");
+    printf("| %-5s | %-20s | %-15s | %-6s | %-6s |\n", "NISN", "Nama", "Alamat", "JK", "Nilai");
+    printf("===================================================================\n");
+    int adaSiswaLolos = 0;
+
+    for (int i = 0; i < jumlah; i++)
+    {
+        if (daftarSiswa[i].nilai > 75)
+        {
+            printf("| %-5d | %-20s | %-15s | %-6c | %-6.2f |\n",
+                   daftarSiswa[i].nisn, daftarSiswa[i].nama, daftarSiswa[i].alamat,
+                   daftarSiswa[i].jenisKelamin, daftarSiswa[i].nilai);
+            adaSiswaLolos = 1;
+        }
+    }
+
+    if (!adaSiswaLolos)
+    {
+        printf("| %-60s |\n", "Tidak ada siswa yang lolos.");
+    }
+
+    printf("===================================================================\n");
+}
+
 int main()
 {
     int jumlahSiswa;
 
-    // Input jumlah siswa
     printf("Masukkan jumlah siswa: ");
     scanf("%d", &jumlahSiswa);
 
@@ -212,19 +190,16 @@ int main()
 
     siswa daftarSiswa[jumlahSiswa];
 
-    // Input data siswa
     for (int i = 0; i < jumlahSiswa; i++)
     {
         printf("\n=== Input Data Siswa %d ===\n", i + 1);
         MasukkanDataSiswa(daftarSiswa, i, jumlahSiswa);
     }
 
-    // Output data siswa
     printf("\n=== Data Siswa yang Terdaftar ===\n");
-    for (int i = 0; i < jumlahSiswa; i++)
-    {
-        TampilkanDataTabel(daftarSiswa, jumlahSiswa);
-    }
+    TampilkanDataTabel(daftarSiswa, jumlahSiswa);
+
+    TampilkanSiswaLolos(daftarSiswa, jumlahSiswa);
 
     int pilihanSort;
     printf("Pilih kriteria pengurutan (1: NISN\n2: Nama\n3: Alamat\n4: Nilai): \n");
@@ -240,50 +215,6 @@ int main()
     {
         CetakData(daftarSiswa[i]);
         printf("\n");
-    }
-
-    int pilihanCari;
-    printf("Pilih kriteria pencarian (1: NISN\n2: Nama\n3: Alamat\n4: Nilai): \n");
-    scanf("%d", &pilihanCari);
-
-    int posisi = -1;
-    if (pilihanCari == 1)
-    {
-        int nisnDicari;
-        printf("Masukkan NISN siswa yang ingin dicari: ");
-        scanf("%d", &nisnDicari);
-        posisi = BinarySearchNISN(daftarSiswa, jumlahSiswa, nisnDicari);
-    }
-    else if (pilihanCari == 2)
-    {
-        char namaDicari[100];
-        printf("Masukkan Nama siswa yang ingin dicari: ");
-        scanf(" %[^\n]", namaDicari);
-        posisi = LinearSearchNama(daftarSiswa, jumlahSiswa, namaDicari);
-    }
-    else if (pilihanCari == 3)
-    {
-        char alamatDicari[100];
-        printf("Masukkan Alamat siswa yang ingin dicari: ");
-        scanf(" %[^\n]", alamatDicari);
-        posisi = LinearSearchAlamat(daftarSiswa, jumlahSiswa, alamatDicari);
-    }
-    else if (pilihanCari == 4)
-    {
-        float nilaiDicari;
-        printf("Masukkan Nilai siswa yang ingin dicari: ");
-        scanf("%f", &nilaiDicari);
-        posisi = LinearSearchNilai(daftarSiswa, jumlahSiswa, nilaiDicari);
-    }
-
-    if (posisi != -1)
-    {
-        printf("\nSiswa ditemukan:\n");
-        CetakData(daftarSiswa[posisi]);
-    }
-    else
-    {
-        printf("\nSiswa tidak ditemukan.\n");
     }
 
     return 0;
