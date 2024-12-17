@@ -16,7 +16,6 @@ int ValidasiNISN(int nisn, siswa sk[], int jumlah)
     if (nisn <= 0)
     {
         printf("NISN harus berupa angka positif.\n");
-        return 0;
     }
     for (int i = 0; i < jumlah; i++)
     {
