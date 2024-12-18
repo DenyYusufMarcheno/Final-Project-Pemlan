@@ -176,45 +176,72 @@ void TampilkanSiswaLolos(siswa daftarSiswa[], int jumlah)
 
 int main()
 {
-    int jumlahSiswa;
-
-    printf("Masukkan jumlah siswa: ");
+   int jumlahSiswa;
+    printf("Masukkan jumlah siswa awal: ");
     scanf("%d", &jumlahSiswa);
 
-    if (jumlahSiswa <= 0)
-    {
+    if (jumlahSiswa <= 0) {
         printf("Jumlah siswa harus lebih dari 0.\n");
         return 1;
     }
 
     siswa daftarSiswa[jumlahSiswa];
-
-    for (int i = 0; i < jumlahSiswa; i++)
-    {
+    for (int i = 0; i < jumlahSiswa; i++) {
         printf("\n=== Input Data Siswa %d ===\n", i + 1);
         MasukkanDataSiswa(daftarSiswa, i, jumlahSiswa);
     }
 
-    printf("\n=== Data Siswa yang Terdaftar ===\n");
-    TampilkanDataTabel(daftarSiswa, jumlahSiswa);
+    int pilihanMenu;
+    do {
+        printf("\n=== Menu Utama ===\n");
+        printf("1. Tampilkan Data Siswa\n");
+        printf("2. Tambahkan Data Siswa Baru\n");
+        printf("3. Urutkan Data Siswa\n");
+        printf("4. Tampilkan Siswa yang Lolos\n");
+        printf("5. Keluar\n");
+        printf("Pilih menu: ");
+        scanf("%d", &pilihanMenu);
 
-    TampilkanSiswaLolos(daftarSiswa, jumlahSiswa);
+        switch (pilihanMenu) {
+        case 1:
+            printf("\n=== Data Siswa yang Terdaftar ===\n");
+            TampilkanDataTabel(daftarSiswa, jumlahSiswa);
+            break;
 
-    int pilihanSort;
-    printf("Pilih kriteria pengurutan (1: NISN\n2: Nama\n3: Alamat\n4: Nilai): \n");
-    scanf("%d", &pilihanSort);
-    int urutan;
-    printf("Pilih urutan (1: ascending\n-1: descending): ");
-    scanf("%d", &urutan);
+        case 2: {
+            jumlahSiswa++;
+            daftarSiswa[jumlahSiswa - 1] = (siswa){0};  // Menambah data baru
+            printf("\n=== Input Data Siswa Baru ===\n");
+            MasukkanDataSiswa(daftarSiswa, jumlahSiswa - 1, jumlahSiswa);
+            break;
+        }
 
-    SelectionSort(daftarSiswa, jumlahSiswa, pilihanSort, urutan);
+        case 3: {
+            int pilihanSort, urutan;
+            printf("Pilih kriteria pengurutan (1: NISN, 2: Nama, 3: Alamat, 4: Nilai): ");
+            scanf("%d", &pilihanSort);
+            printf("Pilih urutan (1: ascending, -1: descending): ");
+            scanf("%d", &urutan);
 
-    printf("\nData Siswa Setelah Diurutkan:\n");
-    for (int i = 0; i < jumlahSiswa; i++)
-    {
-        CetakData(daftarSiswa[i]);
-        printf("\n");
-    }
+            SelectionSort(daftarSiswa, jumlahSiswa, pilihanSort, urutan);
+            printf("\n=== Data Siswa Setelah Diurutkan ===\n");
+            TampilkanDataTabel(daftarSiswa, jumlahSiswa);
+            break;
+        }
+
+        case 4:
+            TampilkanSiswaLolos(daftarSiswa, jumlahSiswa);
+            break;
+
+        case 5:
+            printf("Keluar dari program.\n");
+            break;
+
+        default:
+            printf("Pilihan tidak valid. Silakan pilih lagi.\n");
+        }
+    } while (pilihanMenu != 5);
 
     return 0;
+}
 }
