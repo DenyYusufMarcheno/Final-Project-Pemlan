@@ -173,23 +173,59 @@ void TampilkanSiswaLolos(siswa daftarSiswa[], int jumlah)
 
     printf("===================================================================\n");
 }
+void SimpanKeFile(siswa daftarSiswa[], int jumlah)
+{
+    FILE *file = fopen("data_siswa.txt", "w");
+    if (file == NULL)
+    {
+        printf("Gagal membuka file untuk menyimpan data.\n");
+        return;
+    }
+
+    fprintf(file, "%d\n", jumlah); // Simpan jumlah siswa
+    for (int i = 0; i < jumlah; i++)
+    {
+        fprintf(file, "%d|%s|%s|%c|%.2f\n",
+                daftarSiswa[i].nisn, daftarSiswa[i].nama,
+                daftarSiswa[i].alamat, daftarSiswa[i].jenisKelamin,
+                daftarSiswa[i].nilai);
+    }
+
+    fclose(file);
+    printf("Data berhasil disimpan ke file.\n");
+}
+
+int MuatDariFile(siswa daftarSiswa[], int *jumlah)
+{
+    FILE *file = fopen("data_siswa.txt", "r");
+    if (file == NULL)
+    {
+        printf("Tidak ada file data sebelumnya. Memulai dengan data kosong.\n");
+        *jumlah = 0;
+        return 0;
+    }
+
+    fscanf(file, "%d\n", jumlah); // Baca jumlah siswa
+    for (int i = 0; i < *jumlah; i++)
+    {
+        fscanf(file, "%d|%[^|]|%[^|]|%c|%f\n",
+               &daftarSiswa[i].nisn, daftarSiswa[i].nama,
+               daftarSiswa[i].alamat, &daftarSiswa[i].jenisKelamin,
+               &daftarSiswa[i].nilai);
+    }
+
+    fclose(file);
+    printf("Data berhasil dimuat dari file.\n");
+    return 1;
+}
 
 int main()
 {
-   int jumlahSiswa;
-    printf("Masukkan jumlah siswa awal: ");
-    scanf("%d", &jumlahSiswa);
+    int jumlahSiswa = 0;
+    siswa daftarSiswa[100];
 
-    if (jumlahSiswa <= 0) {
-        printf("Jumlah siswa harus lebih dari 0.\n");
-        return 1;
-    }
-
-    siswa daftarSiswa[jumlahSiswa];
-    for (int i = 0; i < jumlahSiswa; i++) {
-        printf("\n=== Input Data Siswa %d ===\n", i + 1);
-        MasukkanDataSiswa(daftarSiswa, i, jumlahSiswa);
-    }
+    // Memuat data dari file
+    MuatDariFile(daftarSiswa, &jumlahSiswa);
 
     int pilihanMenu;
     do {
@@ -198,7 +234,7 @@ int main()
         printf("2. Tambahkan Data Siswa Baru\n");
         printf("3. Urutkan Data Siswa\n");
         printf("4. Tampilkan Siswa yang Lolos\n");
-        printf("5. Keluar\n");
+        printf("5. Simpan dan Keluar\n");
         printf("Pilih menu: ");
         scanf("%d", &pilihanMenu);
 
@@ -208,13 +244,18 @@ int main()
             TampilkanDataTabel(daftarSiswa, jumlahSiswa);
             break;
 
-        case 2: {
-            jumlahSiswa++;
-            daftarSiswa[jumlahSiswa - 1] = (siswa){0};  // Menambah data baru
-            printf("\n=== Input Data Siswa Baru ===\n");
-            MasukkanDataSiswa(daftarSiswa, jumlahSiswa - 1, jumlahSiswa);
+        case 2:
+            if (jumlahSiswa < 100)
+            {
+                jumlahSiswa++;
+                printf("\n=== Input Data Siswa Baru ===\n");
+                MasukkanDataSiswa(daftarSiswa, jumlahSiswa - 1, jumlahSiswa);
+            }
+            else
+            {
+                printf("Kapasitas maksimum data siswa tercapai.\n");
+            }
             break;
-        }
 
         case 3: {
             int pilihanSort, urutan;
@@ -234,6 +275,7 @@ int main()
             break;
 
         case 5:
+            SimpanKeFile(daftarSiswa, jumlahSiswa);
             printf("Keluar dari program.\n");
             break;
 
@@ -244,4 +286,4 @@ int main()
 
     return 0;
 }
-}
+
