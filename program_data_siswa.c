@@ -228,6 +228,45 @@ void TampilkanSiswaLolos(siswa daftarSiswa[], int jumlah)
     printf("===================================================================\n");
 }
 
+void HapusSiswa(siswa daftarSiswa[], int *jumlah)
+{
+    if (*jumlah == 0)
+    {
+        printf("Tidak ada data siswa untuk dihapus.\n");
+        return;
+    }
+
+    int nisn;
+    printf("Masukkan NISN siswa yang akan dihapus: ");
+    scanf("%d", &nisn);
+
+    int indeks = -1;
+    for (int i = 0; i < *jumlah; i++)
+    {
+        if (daftarSiswa[i].nisn == nisn)
+        {
+            indeks = i;
+            break;
+        }
+    }
+
+    if (indeks == -1)
+    {
+        printf("Siswa dengan NISN %d tidak ditemukan.\n", nisn);
+        return;
+    }
+
+    // Menghapus dengan menggeser elemen
+    for (int i = indeks; i < *jumlah - 1; i++)
+    {
+        daftarSiswa[i] = daftarSiswa[i + 1];
+    }
+    (*jumlah)--;
+
+    printf("Siswa dengan NISN %d berhasil dihapus.\n", nisn);
+}
+
+
 void SimpanKeFile(siswa daftarSiswa[], int jumlah)
 {
     FILE *file = fopen("data_siswa.txt", "w");
@@ -293,6 +332,7 @@ int main()
         printf("5. Cari Siswa\n");
         printf("6. Tampilkan Siswa yang Lolos\n");
         printf("7. Simpan dan Keluar\n");
+        printf("8. Hapus Data Siswa\n");
         printf("Pilih menu: ");
         scanf("%d", &pilihanMenu);
 
@@ -440,8 +480,13 @@ int main()
         case 6:
             TampilkanSiswaLolos(daftarSiswa, jumlahSiswa);
             break;
-
+        
         case 7:
+            printf("\n=== Hapus Data Siswa ===\n");
+            HapusSiswa(daftarSiswa, &jumlahSiswa);
+            break;
+            
+        case 8:
             SimpanKeFile(daftarSiswa, jumlahSiswa);
             printf("Keluar dari program.\n");
             break;
@@ -449,7 +494,7 @@ int main()
         default:
             printf("Pilihan tidak valid. Silakan pilih lagi.\n");
         }
-    } while (pilihanMenu != 7);
+    } while (pilihanMenu != 8);
 
     return 0;
 }
