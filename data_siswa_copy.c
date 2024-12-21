@@ -57,6 +57,18 @@ void CetakData(siswa sk)
     printf("Nilai: %.2f\n", sk.nilai);
 }
 
+void editSiswa(siswa *s) {
+    printf("Mengedit data siswa dengan NISN: %d\n", s->nisn);
+    printf("Nama baru: ");
+    scanf(" %[^\n]", s->nama);
+    printf("Alamat baru: ");
+    scanf(" %[^\n]", s->alamat);
+    printf("Jenis kelamin baru (L/P): ");
+    scanf(" %c", &s->jenisKelamin);
+    printf("Nilai baru: ");
+    scanf("%f", &s->nilai);
+}
+
 void Tukar(siswa *a, siswa *b)
 {
     siswa temp = *a;
@@ -232,9 +244,10 @@ int main()
         printf("\n=== Menu Utama ===\n");
         printf("1. Tampilkan Data Siswa\n");
         printf("2. Tambahkan Data Siswa Baru\n");
-        printf("3. Urutkan Data Siswa\n");
-        printf("4. Tampilkan Siswa yang Lolos\n");
-        printf("5. Simpan dan Keluar\n");
+        printf("3. Edit Data Siswa\n");
+        printf("4. Urutkan Data Siswa\n");
+        printf("5. Tampilkan Siswa yang Lolos\n");
+        printf("6. Simpan dan Keluar\n");
         printf("Pilih menu: ");
         scanf("%d", &pilihanMenu);
 
@@ -256,8 +269,34 @@ int main()
                 printf("Kapasitas maksimum data siswa tercapai.\n");
             }
             break;
+            
+       case 3:
+       if (jumlahSiswa == 0) {
+           printf("Tidak ada data siswa yang dapat diedit.\n");
+           break;
+           
+       }
+       int nisn;
+       printf("Masukkan NISN siswa yang ingin diedit: ");
+       scanf("%d", &nisn);
+       int indeks = -1;
+       for (int i = 0; i < jumlahSiswa; i++) {
+           if (daftarSiswa[i].nisn == nisn) {
+               indeks = i;
+               break;
+               
+           }
+    }
+    if (indeks != -1) {
+        printf("\n=== Edit Data Siswa ===\n");
+        editSiswa(&daftarSiswa[indeks]); // Panggil fungsi editSiswa
+        } else {
+            printf("Siswa dengan NISN %d tidak ditemukan.\n", nisn);
+            }
+            break;
 
-        case 3: {
+
+        case 4: {
             int pilihanSort, urutan;
             printf("Pilih kriteria pengurutan (1: NISN, 2: Nama, 3: Alamat, 4: Nilai): ");
             scanf("%d", &pilihanSort);
@@ -270,11 +309,11 @@ int main()
             break;
         }
 
-        case 4:
+        case 5:
             TampilkanSiswaLolos(daftarSiswa, jumlahSiswa);
             break;
 
-        case 5:
+        case 6:
             SimpanKeFile(daftarSiswa, jumlahSiswa);
             printf("Keluar dari program.\n");
             break;
@@ -286,4 +325,3 @@ int main()
 
     return 0;
 }
-
