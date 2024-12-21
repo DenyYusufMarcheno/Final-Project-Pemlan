@@ -57,7 +57,8 @@ void CetakData(siswa sk)
     printf("Nilai: %.2f\n", sk.nilai);
 }
 
-void editSiswa(siswa *s) {
+void editSiswa(siswa *s)
+{
     printf("Mengedit data siswa dengan NISN: %d\n", s->nisn);
     printf("Nama baru: ");
     scanf(" %[^\n]", s->nama);
@@ -110,6 +111,47 @@ void SelectionSort(siswa arr[], int jumlah, int pilihan, int urutan)
             Tukar(&arr[pos], &arr[i]);
         }
     }
+}
+
+int BinarySearch(siswa arr[], int jumlah, void *key, int pilihan)
+{
+    int kiri = 0, kanan = jumlah - 1, tengah;
+    while (kiri <= kanan)
+    {
+        tengah = (kiri + kanan) / 2;
+        int hasilBanding = 0;
+
+        switch (pilihan)
+        {
+        case 1:
+            hasilBanding = (*(int *)key - arr[tengah].nisn);
+            break;
+
+        case 2:
+            hasilBanding = strcmp((char *)key, arr[tengah].nama);
+            break;
+
+        case 3:
+            if (*(float *)key < arr[tengah].nilai)
+                hasilBanding = -1;
+            else if (*(float *)key > arr[tengah].nilai)
+                hasilBanding = 1;
+            else
+                hasilBanding = 0;
+            break;
+
+        default:
+            return -1;
+        }
+
+        if (hasilBanding == 0)
+            return tengah;
+        else if (hasilBanding < 0)
+            kanan = tengah - 1;
+        else
+            kiri = tengah + 1;
+    }
+    return -1;
 }
 
 void MasukkanDataSiswa(siswa daftarSiswa[], int index, int jumlahSiswa)
@@ -185,6 +227,7 @@ void TampilkanSiswaLolos(siswa daftarSiswa[], int jumlah)
 
     printf("===================================================================\n");
 }
+
 void SimpanKeFile(siswa daftarSiswa[], int jumlah)
 {
     FILE *file = fopen("data_siswa.txt", "w");
@@ -240,18 +283,21 @@ int main()
     MuatDariFile(daftarSiswa, &jumlahSiswa);
 
     int pilihanMenu;
-    do {
+    do
+    {
         printf("\n=== Menu Utama ===\n");
         printf("1. Tampilkan Data Siswa\n");
         printf("2. Tambahkan Data Siswa Baru\n");
         printf("3. Edit Data Siswa\n");
         printf("4. Urutkan Data Siswa\n");
-        printf("5. Tampilkan Siswa yang Lolos\n");
-        printf("6. Simpan dan Keluar\n");
+        printf("5. Cari Siswa\n");
+        printf("6. Tampilkan Siswa yang Lolos\n");
+        printf("7. Simpan dan Keluar\n");
         printf("Pilih menu: ");
         scanf("%d", &pilihanMenu);
 
-        switch (pilihanMenu) {
+        switch (pilihanMenu)
+        {
         case 1:
             printf("\n=== Data Siswa yang Terdaftar ===\n");
             TampilkanDataTabel(daftarSiswa, jumlahSiswa);
@@ -269,34 +315,38 @@ int main()
                 printf("Kapasitas maksimum data siswa tercapai.\n");
             }
             break;
-            
-       case 3:
-       if (jumlahSiswa == 0) {
-           printf("Tidak ada data siswa yang dapat diedit.\n");
-           break;
-           
-       }
-       int nisn;
-       printf("Masukkan NISN siswa yang ingin diedit: ");
-       scanf("%d", &nisn);
-       int indeks = -1;
-       for (int i = 0; i < jumlahSiswa; i++) {
-           if (daftarSiswa[i].nisn == nisn) {
-               indeks = i;
-               break;
-               
-           }
-    }
-    if (indeks != -1) {
-        printf("\n=== Edit Data Siswa ===\n");
-        editSiswa(&daftarSiswa[indeks]); // Panggil fungsi editSiswa
-        } else {
-            printf("Siswa dengan NISN %d tidak ditemukan.\n", nisn);
+
+        case 3:
+            if (jumlahSiswa == 0)
+            {
+                printf("Tidak ada data siswa yang dapat diedit.\n");
+                break;
+            }
+            int nisn;
+            printf("Masukkan NISN siswa yang ingin diedit: ");
+            scanf("%d", &nisn);
+            int indeks = -1;
+            for (int i = 0; i < jumlahSiswa; i++)
+            {
+                if (daftarSiswa[i].nisn == nisn)
+                {
+                    indeks = i;
+                    break;
+                }
+            }
+            if (indeks != -1)
+            {
+                printf("\n=== Edit Data Siswa ===\n");
+                editSiswa(&daftarSiswa[indeks]); // Panggil fungsi editSiswa
+            }
+            else
+            {
+                printf("Siswa dengan NISN %d tidak ditemukan.\n", nisn);
             }
             break;
 
-
-        case 4: {
+        case 4:
+        {
             int pilihanSort, urutan;
             printf("Pilih kriteria pengurutan (1: NISN, 2: Nama, 3: Alamat, 4: Nilai): ");
             scanf("%d", &pilihanSort);
@@ -310,10 +360,88 @@ int main()
         }
 
         case 5:
+        {
+            if (jumlahSiswa == 0)
+            {
+                printf("Tidak ada data siswa yang dapat dicari.\n");
+                break;
+            }
+            int kriteria;
+            printf("\nPilih kriteria pencarian (1: NISN, 2:Nama, 3:Nilai): ");
+            scanf("%d", &kriteria);
+
+            if (kriteria == 1)
+            {
+                int cariNISN;
+                printf("Masukkan NISN yang ingin dicari: ");
+                scanf("%d", &cariNISN);
+
+                SelectionSort(daftarSiswa, jumlahSiswa, 1, 1);
+
+                int hasilCari = BinarySearch(daftarSiswa, jumlahSiswa, &cariNISN, 1);
+                if (hasilCari != -1)
+                {
+                    printf("\nSiswa ditemukan:\n");
+                    CetakData(daftarSiswa[hasilCari]);
+                }
+                else
+                {
+                    printf("Siswa dengan NISN %d tidak ditemukan.\n", cariNISN);
+                }
+            }
+            else if (kriteria == 2)
+            {
+                char cariNama[100];
+                printf("Masukkan Nama yang ingin dicari: ");
+
+                while (getchar() != '\n')
+                    ; // Membersihkan buffer input
+
+                fgets(cariNama, sizeof(cariNama), stdin);
+                cariNama[strcspn(cariNama, "\n")] = '\0'; // Menghapus newline di akhir input
+
+                SelectionSort(daftarSiswa, jumlahSiswa, 2, 1);
+
+                int hasilCari = BinarySearch(daftarSiswa, jumlahSiswa, cariNama, 2);
+                if (hasilCari != -1)
+                {
+                    printf("\nSiswa ditemukan:\n");
+                    CetakData(daftarSiswa[hasilCari]);
+                }
+                else
+                {
+                    printf("Siswa dengan nama \"%s\" tidak ditemukan.\n", cariNama);
+                }
+            }
+
+            else if (kriteria == 3)
+            {
+                float cariNilai;
+                printf("Masukkan nilai yang ingin dicari: ");
+                scanf("%f", &cariNilai);
+
+                SelectionSort(daftarSiswa, jumlahSiswa, 4, 1);
+
+                int hasilCari = BinarySearch(daftarSiswa, jumlahSiswa, &cariNilai, 3);
+                if (hasilCari != -1)
+                {
+                    printf("\nSiswa ditemukan:\n");
+                    CetakData(daftarSiswa[hasilCari]);
+                }
+                else
+                {
+                    printf("Siswa dengan nilai %.2f tidak ditemukan.\n", cariNilai);
+                }
+            }
+
+            break;
+        }
+
+        case 6:
             TampilkanSiswaLolos(daftarSiswa, jumlahSiswa);
             break;
 
-        case 6:
+        case 7:
             SimpanKeFile(daftarSiswa, jumlahSiswa);
             printf("Keluar dari program.\n");
             break;
@@ -321,7 +449,7 @@ int main()
         default:
             printf("Pilihan tidak valid. Silakan pilih lagi.\n");
         }
-    } while (pilihanMenu != 5);
+    } while (pilihanMenu != 7);
 
     return 0;
 }
