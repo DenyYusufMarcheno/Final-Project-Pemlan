@@ -331,8 +331,8 @@ int main()
         printf("4. Urutkan Data Siswa\n");
         printf("5. Cari Siswa\n");
         printf("6. Tampilkan Siswa yang Lolos\n");
-        printf("7. Simpan dan Keluar\n");
-        printf("8. Hapus Data Siswa\n");
+        printf("7. Hapus Data Siswa\n");
+        printf("8. Simpan dan Keluar\n");
         printf("Pilih menu: ");
         scanf("%d", &pilihanMenu);
 
